@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Barcode Processor</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5a4bcb;
+        }
+        h3 {
+            color: #34495e;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        p {
+            margin: 5px 0;
+            color: #7f8c8d;
+        }
+        svg {
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Barcode Processor</h1>
+        <input type="text" id="barcodeInput" placeholder="Scan barcode here" autofocus oninput="processBarcode()">
+        <div>
+            <h3>Extracted Data</h3>
+            <p id="extracted"></p>
+        </div>
+        <div>
+            <h3>New Barcode</h3>
+            <svg id="newBarcode"></svg>
+            <button onclick="printBarcode()">Print</button>
+        </div>
+    </div>
+
+    <script>
+        let lastBarcode = '';
+
+        function processBarcode() {
+            let input = document.getElementById('barcodeInput').value.trim();
+            if (input) {
+                let extracted = extractBarcode(input);
+                if (extracted && extracted !== lastBarcode) {
+                    document.getElementById('extracted').textContent = '';
+                    document.getElementById('newBarcode').innerHTML = '';
+                    document.getElementById('extracted').textContent = extracted;
+                    JsBarcode('#newBarcode', extracted, { format: 'CODE128', displayValue: true });
+                    lastBarcode = extracted;
+                } else if (!extracted) {
+                    document.getElementById('extracted').textContent = 'Mã không hợp lệ';
+                    document.getElementById('newBarcode').innerHTML = '';
+                }
+                document.getElementById('barcodeInput').value = '';
+            }
+        }
+
+        function printBarcode() {
+            let svg = document.getElementById('newBarcode');
+            let printWindow = window.open('');
+            printWindow.document.write('<html><body>' + svg.outerHTML + '</body></html>');
+            printWindow.print();
+        }
+
+        function extractBarcode(input) {
+            let cleaned = input.trim();
+            
+            // Trường hợp 1: PART NO:xxxx -> lấy phần sau "PART NO:"
+            if (cleaned.toUpperCase().startsWith('PART NO:')) {
+                let part = cleaned.split('PART NO:')[1].trim();
+                return part.split(' ')[0] || null;
+            }
+            // Trường hợp 2: Pxxxx-yyyy -> lấy phần trước khoảng trắng
+            else if (cleaned.match(/^P\d{4}-\d{6}/)) {
+                return cleaned.split(' ')[0] || null;
+            }
+            // Trường hợp mặc định: lấy phần trước khoảng trắng đầu tiên
+            else {
+                return cleaned.split(' ')[0] || null;
+            }
+        }
+    </script>
+</body>
+</html>
