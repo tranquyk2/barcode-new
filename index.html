@@ -2,8 +2,10 @@
 <html>
 <head>
     <title>Barcode Processor</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-    <script src="https://unpkg.com/quagga@0.17.0/dist/quagga.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/JsBarcode.all.min.js"></script>
+    <script src="js/quaggaJS-0.12.1/dist/quagga.min.js"></script>
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -22,6 +24,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 300px;
+            max-width: 98vw;
+            box-sizing: border-box;
         }
         h1 {
             color: #2c3e50;
@@ -59,6 +63,9 @@
             margin: 10px 0;
             border: 1px solid #ddd;
             padding: 5px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         #video {
             width: 100%;
@@ -68,6 +75,106 @@
         #canvas {
             display: none;
         }
+    </style>
+    <style>
+    /* Desktop styles */
+    @media (min-width: 769px) {
+        .container {
+            padding: 2rem;
+            margin: 2rem;
+        }
+        
+        button {
+            margin: 1rem;
+        }
+        
+        input {
+            font-size: 1rem;
+        }
+    }
+    
+    /* Tablet styles */
+    @media (min-width: 481px) and (max-width: 768px) {
+        .container {
+            width: 95%;
+            padding: 1.5rem;
+        }
+        
+        button {
+            margin: 0.75rem;
+        }
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 480px) {
+        body {
+            padding: 0.5rem;
+        }
+        
+        .container {
+            width: 100%;
+            margin: 0;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        
+        h1 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        input {
+            width: 90%;
+            font-size: 0.9rem;
+            padding: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        button {
+            width: auto;
+            min-width: 100px;
+            padding: 8px 15px;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        svg {
+            max-width: 90%;
+            margin: 0.5rem auto;
+        }
+        
+        #video {
+            width: 90%;
+            margin: 0.5rem auto;
+        }
+        
+        .action-links {
+            margin: 0.5rem 0;
+        }
+        
+        .action-links a {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Common animation */
+    .container div {
+        transition: all 0.3s ease-in-out;
+    }
+    
+    /* Better touch targets for mobile */
+    @media (hover: none) {
+        button, a {
+            min-height: 44px;
+            line-height: 44px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -86,7 +193,7 @@
         <div style="margin-bottom:20px; display:none;" id="formManual">
             <h3>Nhập thủ công</h3>
             <input type="text" id="manualBarcodeInput" placeholder="Nhập barcode thủ công..." onkeydown="if(event.key==='Enter'){processManualBarcode();}">
-            <button onclick="processManualBarcode()">Xử lý thủ công</button>
+            <button onclick="processManualBarcode()">Xử lý mã</button>
             <div style="margin-top:10px;">
                 <a href="#" onclick="showAutoForm();return false;">Quay lại quét tự động</a>
             </div>
